@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pkl
+*.pyc
+.venv/
+*.csv
+
+# Node
+node_modules/
+dist/
+.env
+
+
+backend/data/raw/
+backend/data/processed/
+backend/models/
