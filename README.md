@@ -2,9 +2,9 @@
 
 A full-stack movie recommendation system built with Python (FastAPI) and React. Users can search for a movie and get intelligent recommendations based on content similarity, or browse movies by genre.
 
-**Live Demo:** [your-vercel-link-here]  
-**Backend API:** [your-railway-link-here]  
-**API Docs:** [your-railway-link-here/docs]
+**Live Demo:** (https://cine-sync-hvnp.vercel.app) 
+**Backend API:** https://cinesync-production-9e47.up.railway.app 
+**API Docs:**https://cinesync-production-9e47.up.railway.app/docs
 
 ---
 
