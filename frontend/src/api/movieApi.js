@@ -65,3 +65,13 @@ export const getMoviesByGenre = async (genre, count = "20") => {
         return { results: [] }
     }
 }
+
+export const getMovieFromBackend = async (title) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/movie/${encodeURIComponent(title)}`)
+        return response.data
+    } catch (error) {
+        console.error("Error fetching movie from backend:", error)
+        return null
+    }
+}

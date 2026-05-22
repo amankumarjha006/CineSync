@@ -103,6 +103,28 @@ def credits(title: str):
         "genres": row['genres'] if not pd.isna(row['genres']) else "[]"
     }
     
+@app.get("/movie/{title}")
+def get_movie(title: str):
+    row, idx = get_movie_match(title)
+    if row is None:
+        return {"error": f"Movie '{title}' not found"}
+    import ast
+    try:
+        cast_list = ast.literal_eval(row['cast']) if not pd.isna(row['cast']) else []
+    except:
+        cast_list = []
+    return {
+        "title": row["title"],
+        "overview": row["overview"] if not pd.isna(row["overview"]) else "",
+        "poster_path": row["poster_path"] if not pd.isna(row["poster_path"]) else None,
+        "vote_average": row["vote_average"],
+        "release_year": str(row["release_year"]),
+        "genres": row["genres"],
+        "director": row["director"] if not pd.isna(row["director"]) else "Unknown",
+        "cast": cast_list,
+        "runtime": row["runtime"] if not pd.isna(row["runtime"]) else None,
+    }
+
 @app.get("/genre/{genre}")
 def get_by_genre(genre: str, n: int = 20):
     filtered = movies[movies['genres'].str.contains(genre, case=False, na=False)]

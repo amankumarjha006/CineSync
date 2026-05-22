@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getRecommendations, getMoviePoster, getMovieDetails, getMovieCredits } from "../api/movieApi";
+import { getRecommendations, getMoviePoster, getMovieDetails, getMovieCredits, getMovieFromBackend } from "../api/movieApi";
 import { Star, Calendar, ArrowLeft, PlayCircle, Loader2, User, Clapperboard, Film, Popcorn } from "lucide-react";
 import MovieCard from "../components/MovieCard";
 
@@ -32,24 +32,37 @@ function Results() {
 
       // Fetch details and recommendations in parallel
       Promise.all([
-        getMovieDetails(movie),
         getRecommendations(movie),
-        getMovieCredits(movie)
-      ]).then(async ([details, recData, credsData]) => {
+        getMovieFromBackend(movie)
+      ]).then(async ([recData, movieData]) => {
         if (recData && recData.error) {
           setNotFound(true);
           return;
         }
-
         setNotFound(false);
-        setSearchedMovie(details);
-        setCredits(credsData);
-
+        if (movieData && !movieData.error) {
+          setSearchedMovie({
+            title: movieData.title,
+            overview: movieData.overview,
+            poster_path: movieData.poster_path,
+            backdrop_path: movieData.poster_path,
+            vote_average: movieData.vote_average,
+            release_date: movieData.release_year,
+            runtime: movieData.runtime,
+          });
+          setCredits({
+            director: movieData.director,
+            cast: movieData.cast,
+            genres: movieData.genres
+          });
+        }
         if (recData && recData.recommendations) {
           const moviesWithPosters = await Promise.all(
             recData.recommendations.map(async (m) => {
-              const poster = await getMoviePoster(m.title);
-              return { ...m, poster };
+              const posterUrl = m.poster_path
+                ? `https://image.tmdb.org/t/p/w500${m.poster_path}`
+                : null;
+              return { ...m, poster: posterUrl };
             })
           );
           setRecommendations(moviesWithPosters);
@@ -140,7 +153,7 @@ function Results() {
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
                   <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-slate-300 font-medium shadow-sm">
                     <Calendar size={16} className="text-slate-400" />
-                    <span>{searchedMovie.release_date?.split('-')[0] || "Unknown"}</span>
+                    <span>{searchedMovie.release_date || "Unknown"}</span>
                   </div>
                   <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-slate-300 font-medium shadow-sm">
                     <Star size={16} className="text-yellow-500 fill-current drop-shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
