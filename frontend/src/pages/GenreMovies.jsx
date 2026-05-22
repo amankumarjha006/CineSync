@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getMoviesByGenre, getMoviePoster } from "../api/movieApi";
+import { getMoviesByGenre } from "../api/movieApi";
 import MovieCard from "../components/MovieCard";
 import { Loader2, ArrowLeft, Film } from "lucide-react";
 
@@ -15,14 +15,14 @@ function GenreMovies() {
         // Decode the genre parameter back to its original string
         const decodedGenre = decodeURIComponent(genre);
         getMoviesByGenre(decodedGenre, 40) // fetch up to 40 movies
-            .then(async (data) => {
+            .then((data) => {
                 const results = data.results || [];
-                const moviesWithPosters = await Promise.all(
-                    results.map(async (m) => {
-                        const poster = await getMoviePoster(m.title);
-                        return { ...m, poster };
-                    })
-                );
+                const moviesWithPosters = results.map((m) => ({
+                    ...m,
+                    poster: m.poster_path
+                        ? `https://image.tmdb.org/t/p/w500${m.poster_path}`
+                        : null
+                }));
                 setMovies(moviesWithPosters);
             })
             .catch((err) => console.error(err))
