@@ -39,18 +39,10 @@ function Home() {
     }
   };
 
-  const handleNavigate = async (searchQuery) => {
+ const handleNavigate = (searchQuery) => {
     if (!searchQuery.trim()) return;
-    setIsLoading(true);
-    try {
-      await getMovieDetails(searchQuery);
-      navigate('/results', { state: { movie: searchQuery } });
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    navigate('/results', { state: { movie: searchQuery } });
+};
 
   return (
     <div className="min-h-[calc(100vh-5rem)] flex flex-col items-center justify-center p-6 relative overflow-hidden">
