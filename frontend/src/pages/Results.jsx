@@ -36,7 +36,7 @@ function Results() {
         getRecommendations(movie),
         getMovieCredits(movie)
       ]).then(async ([details, recData, credsData]) => {
-        if (!details || (recData && recData.error)) {
+        if (recData && recData.error) {
           setNotFound(true);
           return;
         }
