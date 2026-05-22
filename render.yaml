@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: cinesync-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
